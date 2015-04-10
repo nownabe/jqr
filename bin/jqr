@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+require "active_support/core_ext/hash/indifferent_access"
+require "color_echo/get"
+require "json"
+require "pp"
+
+raw_json = JSON.parse(STDIN.read).with_indifferent_access
+op = ARGV[0] || ""
+
+result = eval("raw_json#{op}")
+
+processed =
+  case result
+  when Hash
+    pretty = JSON.pretty_generate(result)
+    if STDOUT.tty?
+      pretty
+        .gsub(/(?<key>".+"):/) { "#{CE.fg(:h_blue).get(Regexp.last_match[:key])}:" }
+        .gsub(/: (?<val>".+")/) { ": #{CE.fg(:green).get(Regexp.last_match[:val])}" }
+    else
+      pretty
+    end
+  when String, Numeric, TrueClass, FalseClass
+    result
+  else
+    PP.pp(result, "")
+  end
+
+puts processed
