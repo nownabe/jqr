@@ -29,7 +29,7 @@ module Jqr
 
         o.bool "-v", "--version", "Print the version"
         o.bool "-h", "--help", "Show this message"
-        o.bool "--color", "Enable colorful output"
+        o.bool "--no-color", "Disable colorful output"
       end
     end
   end
